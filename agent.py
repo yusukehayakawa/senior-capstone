@@ -6,6 +6,6 @@ class Agent:
   def makeDecision(self, numberOfObservedAgent, numberOfStandOrGoodAgent):
     ratio = numberOfStandOrGoodAgent / numberOfObservedAgent
     if ratio - self.fRatio > 0.001:
-      behavior = 1
+      self.behavior = 1
     elif ratio - self.fRatio < -0.001:
-      behavior = 0
+      self.behavior = 0

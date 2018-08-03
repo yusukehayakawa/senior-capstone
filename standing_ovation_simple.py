@@ -4,6 +4,7 @@ import agent
 import time
 import random
 import sys
+import math
 
 class StandingOvationSimple:
   def __init__(self, N_Column, N_Row, tmax):
@@ -11,25 +12,22 @@ class StandingOvationSimple:
     self.NOfColumn = N_Column
     self.NOfRow = N_Row
     self.TMAX = tmax
-
-    self.agentField = [[[0+row for row in range(300)] for col in range(300) ] for k in range(3)]
+    # agentField[0~2][row][col]作成
+    self.agentField = [[[0+row for row in range(N_Row)] for col in range(N_Column) ] for k in range(2)]
     self.fRandomOrder = []
     self.fRandom = int(time.time() * 1000)
 
     count = 0
     row = 0
-    col = 0
-
     while row < N_Row:
+      col = 0
       while col < N_Column:
         self.fRandomOrder.append(count)
-        # fRandom.NextDouble()
         self.agentField[0][row][col] = agent.Agent(0, 0.0)
         self.agentField[1][row][col] = agent.Agent(0, 0.0)
         count += 1
         col += 1
       row += 1
-      col = 0
     self.setNewTrial()
 
   def setNewTrial(self):
@@ -38,7 +36,7 @@ class StandingOvationSimple:
     counter = 0
     random.shuffle(self.fRandomOrder)
     for i in self.fRandomOrder:
-      row = round(i / self.NOfColumn) #整数に変換
+      row = int(i / self.NOfColumn) #整数に変換 切り捨て
       col = i % self.NOfColumn
       if counter < sizeHalf:
         behavior = 1
@@ -56,6 +54,22 @@ class StandingOvationSimple:
     while t < self.TMAX:
       self.nextStep(t)
       t += 1
+      if t % 1 == 0:
+        self.printBehavior(t)
+
+  def printBehavior(self, time):
+    row = 0
+    while row < self.NOfRow:
+      col = 0
+      while col < self.NOfColumn:
+        if self.agentField[time % 2][row][col].behavior == 0:
+          print("_,", end="")
+        else:
+          print("0,", end="")
+        col += 1
+      sys.stdout.write('\n')
+      row += 1
+    sys.stdout.write('\n')
 
   def nextStep(self, t):
     self.nextStepStandingOvationSync(t)
@@ -100,31 +114,18 @@ class StandingOvationSimple:
 
   def nextStepStandingOvationSync(self, t):
     row = 0
-    col = 0
     while row < self.NOfRow:
+      col = 0
       while col < self.NOfColumn:
         self.getNeiborSetStandingOvation(row, col, self.agentField[t % 2][row][col], self.agentField[(t - 1) % 2])
         col += 1
       row += 1
-      col = 0
 
   def getAgentField(self, t):
     return self.agentField[t % 2]
 
-  # def main(self):
-  #   isSyncronize = True
-  #   so = StandingOvationSimple(300, 300, 800)
-  #   start = time.time() * 1000
-  #   so.run()
-  #   end = time.time() * 1000
-  #   runTime = (end - start) / 1000.0
-  #   print(runTime)
-
-  # if __name__ == "__main__":
-  #   main()
-
 isSyncronize = True
-so = StandingOvationSimple(300, 300, 800)
+so = StandingOvationSimple(30, 30, 4)
 start = time.time() * 1000
 so.run()
 end = time.time() * 1000
