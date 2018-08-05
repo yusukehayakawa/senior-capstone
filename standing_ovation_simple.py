@@ -1,5 +1,3 @@
-# from time import sleep
-# import numpy as np
 import agent
 import time
 import random
@@ -12,7 +10,7 @@ class StandingOvationSimple:
     self.NOfColumn = N_Column
     self.NOfRow = N_Row
     self.TMAX = tmax
-    # agentField[0~2][row][col]作成
+    # agentField[0~1][row][col]作成
     self.agentField = [[[0+row for row in range(N_Row)] for col in range(N_Column) ] for k in range(2)]
     self.fRandomOrder = []
     self.fRandom = int(time.time() * 1000)
