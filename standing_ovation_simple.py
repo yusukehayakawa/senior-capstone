@@ -4,63 +4,63 @@ import random
 import sys
 import math
 
-class StandingOvationSimple:
-  def __init__(self, N_Column, N_Row, tmax):
+class StandingOvationSimple(object):
+  def __init__(self, n_column, n_row, tmax):
 
-    self.NOfColumn = N_Column
-    self.NOfRow = N_Row
-    self.TMAX = tmax
-    # agentField[0~1][row][col]作成
-    self.agentField = [[[0+row for row in range(N_Row)] for col in range(N_Column) ] for k in range(2)]
-    self.fRandomOrder = []
-    self.fRandom = int(time.time() * 1000)
+    self.n_of_column = n_column
+    self.n_of_row = n_row
+    self.tmax = tmax
+    # agent_field[0~1][row][col]作成
+    self.agent_field = [[[0+row for row in range(n_row)] for col in range(n_column) ] for k in range(2)]
+    self.f_random_order = []
+    self.f_random = int(time.time() * 1000)
 
     count = 0
     row = 0
-    while row < N_Row:
+    while row < n_row:
       col = 0
-      while col < N_Column:
-        self.fRandomOrder.append(count)
-        self.agentField[0][row][col] = agent.Agent(0, 0.0)
-        self.agentField[1][row][col] = agent.Agent(0, 0.0)
+      while col < n_column:
+        self.f_random_order.append(count)
+        self.agent_field[0][row][col] = agent.Agent(0, 0.0)
+        self.agent_field[1][row][col] = agent.Agent(0, 0.0)
         count += 1
         col += 1
       row += 1
-    self.setNewTrial()
+    self.set_new_trial()
 
-  def setNewTrial(self):
-    sizeHalf = len(self.fRandomOrder) / 2
+  def set_new_trial(self):
+    size_half = len(self.f_random_order) / 2
 
     counter = 0
-    random.shuffle(self.fRandomOrder)
-    for i in self.fRandomOrder:
-      row = int(i / self.NOfColumn) #整数に変換 切り捨て
-      col = i % self.NOfColumn
-      if counter < sizeHalf:
+    random.shuffle(self.f_random_order)
+    for i in self.f_random_order:
+      row = int(i / self.n_of_column) #整数に変換 切り捨て
+      col = i % self.n_of_column
+      if counter < size_half:
         behavior = 1
       else:
         behavior = 0
-      self.agentField[0][row][col].behavior = behavior
-      self.agentField[0][row][col].fRatio = 0.5
-      self.agentField[1][row][col].behavior = behavior
-      self.agentField[1][row][col].fRatio = 0.5
+      self.agent_field[0][row][col].behavior = behavior
+      self.agent_field[0][row][col].f_ratio = 0.5
+      self.agent_field[1][row][col].behavior = behavior
+      self.agent_field[1][row][col].f_ratio = 0.5
 
       counter += 1
 
   def run(self):
     t = 1
-    while t < self.TMAX:
-      self.nextStep(t)
+    while t < self.tmax:
+      self.next_step(t)
       t += 1
       if t % 1 == 0:
-        self.printBehavior(t)
+        self.print_behavior(t)
 
-  def printBehavior(self, time):
+  def print_behavior(self, time):
     row = 0
-    while row < self.NOfRow:
+    while row < self.n_of_row:
       col = 0
-      while col < self.NOfColumn:
-        if self.agentField[time % 2][row][col].behavior == 0:
+      while col < self.n_of_column:
+        if self.agent_field[time % 2][row][col].behavior == 0:
           print("_,", end="")
         else:
           print("0,", end="")
@@ -69,63 +69,63 @@ class StandingOvationSimple:
       row += 1
     sys.stdout.write('\n')
 
-  def nextStep(self, t):
-    self.nextStepStandingOvationSync(t)
+  def next_step(self, t):
+    self.next_step_standing_ovation_sync(t)
 
-  def getNeiborSetStandingOvation(self, row, col, agent, agentField):
-    numberOfStanding = 0
+  def get_neibor_set_standing_ovation(self, row, col, agent, agent_field):
+    number_of_standing = 0
     if row != 0:
       if col == 0:
-        numberOfStanding += agentField[row - 1][col].behavior
-        numberOfStanding += agentField[row][col + 1].behavior
-        numberOfStanding += agentField[row - 1][col + 1].behavior
-        agent.makeDecision(3, numberOfStanding)
+        number_of_standing += agent_field[row - 1][col].behavior
+        number_of_standing += agent_field[row][col + 1].behavior
+        number_of_standing += agent_field[row - 1][col + 1].behavior
+        agent.make_decision(3, number_of_standing)
         return True
-      elif col == self.NOfColumn - 1:
-        numberOfStanding += agentField[row - 1][col].behavior
-        numberOfStanding += agentField[row][col - 1].behavior
-        numberOfStanding += agentField[row - 1][col - 1].behavior
-        agent.makeDecision(3, numberOfStanding)
+      elif col == self.n_of_column - 1:
+        number_of_standing += agent_field[row - 1][col].behavior
+        number_of_standing += agent_field[row][col - 1].behavior
+        number_of_standing += agent_field[row - 1][col - 1].behavior
+        agent.make_decision(3, number_of_standing)
         return True
       else:
-        numberOfStanding += agentField[row - 1][col - 1].behavior
-        numberOfStanding += agentField[row - 1][col].behavior
-        numberOfStanding += agentField[row - 1][col + 1].behavior
-        numberOfStanding += agentField[row][col - 1].behavior
-        numberOfStanding += agentField[row][col + 1].behavior
-        agent.makeDecision(5, numberOfStanding)
+        number_of_standing += agent_field[row - 1][col - 1].behavior
+        number_of_standing += agent_field[row - 1][col].behavior
+        number_of_standing += agent_field[row - 1][col + 1].behavior
+        number_of_standing += agent_field[row][col - 1].behavior
+        number_of_standing += agent_field[row][col + 1].behavior
+        agent.make_decision(5, number_of_standing)
         return True
     else:
       if col == 0:
-        numberOfStanding += agentField[row][col + 1].behavior
-        agent.makeDecision(1, numberOfStanding)
+        number_of_standing += agent_field[row][col + 1].behavior
+        agent.make_decision(1, number_of_standing)
         return True
-      elif col == self.NOfColumn - 1:
-        numberOfStanding += agentField[row][col - 1].behavior
-        agent.makeDecision(1, numberOfStanding)
+      elif col == self.n_of_column - 1:
+        number_of_standing += agent_field[row][col - 1].behavior
+        agent.make_decision(1, number_of_standing)
         return True
       else:
-        numberOfStanding += agentField[row][col - 1].behavior
-        numberOfStanding += agentField[row][col + 1].behavior
-        agent.makeDecision(2, numberOfStanding)
+        number_of_standing += agent_field[row][col - 1].behavior
+        number_of_standing += agent_field[row][col + 1].behavior
+        agent.make_decision(2, number_of_standing)
         return True
 
-  def nextStepStandingOvationSync(self, t):
+  def next_step_standing_ovation_sync(self, t):
     row = 0
-    while row < self.NOfRow:
+    while row < self.n_of_row:
       col = 0
-      while col < self.NOfColumn:
-        self.getNeiborSetStandingOvation(row, col, self.agentField[t % 2][row][col], self.agentField[(t - 1) % 2])
+      while col < self.n_of_column:
+        self.get_neibor_set_standing_ovation(row, col, self.agent_field[t % 2][row][col], self.agent_field[(t - 1) % 2])
         col += 1
       row += 1
 
-  def getAgentField(self, t):
-    return self.agentField[t % 2]
+  def get_agent_field(self, t):
+    return self.agent_field[t % 2]
 
-isSyncronize = True
+is_syncronize = True
 so = StandingOvationSimple(30, 30, 4)
 start = time.time() * 1000
 so.run()
 end = time.time() * 1000
-runTime = (end - start) / 1000.0
-print(runTime)
+run_time = (end - start) / 1000.0
+print(run_time)
