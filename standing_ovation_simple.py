@@ -52,8 +52,8 @@ class StandingOvationSimple(object):
     while t < self.tmax:
       self.next_step(t)
       t += 1
-      if t % 1 == 0:
-        self.print_behavior(t)
+      # if t % 1 == 0:
+      #   self.print_behavior(t)
 
   def print_behavior(self, time):
     row = 0
@@ -123,7 +123,7 @@ class StandingOvationSimple(object):
     return self.agent_field[t % 2]
 
 is_syncronize = True
-so = StandingOvationSimple(30, 30, 4)
+so = StandingOvationSimple(30, 30, 3)
 start = time.time() * 1000
 so.run()
 end = time.time() * 1000

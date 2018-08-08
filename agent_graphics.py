@@ -9,7 +9,6 @@ import traceback
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-
 class AgentGraphics(standing_ovation_simple.StandingOvationSimple):
   def __init__(self, n_column, n_row, tmax):
     super().__init__(n_column, n_row, tmax)
@@ -24,31 +23,38 @@ class AgentGraphics(standing_ovation_simple.StandingOvationSimple):
     self.f_size_x = 0 
     self.f_size_y = 0
 
-  def run(self, delay):
-    t = 1
+  def paint_component(self):
     fig = plt.figure()
-    while t < self.tmax:
-      self.next_step(t)
-      self.f_agent_field = self.get_agent_field(t)
-      self.plot_grid(self.f_agent_field)
-      # heatmap = sns.heatmap(self.g_data, cmap='winter', cbar=False, linewidths=1, square=True)
-      # plt.cla()
-      # plt.show()
-      animation.FuncAnimation(fig, self.paint_component(), interval=100)
-      plt.show()
-      # try:
-      #   time.sleep(delay)
-      # except:
-      #   print(traceback.format_exc())
-      #   traceback.print_exc()
-      t += 1
+    animation.FuncAnimation(fig, self.update, interval=100, frames=self.tmax, repeat=False)
+    # sns.heatmap(self.g_data, cmap='winter', cbar=False, linewidths=1, square=True)
+
+  def update(self, i):
+    plt.clf()
+    self.next_step(i)
+    self.f_agent_field = self.get_agent_field(i)
+    self.plot_grid(self.f_agent_field)
+    sns.heatmap(self.g_data, cmap='winter', cbar=False, linewidths=1, square=True)
+    # t = time
+    # fig = plt.figure()
+    # while i < self.tmax:
+    #   self.next_step(i)
+    #   self.f_agent_field = self.get_agent_field(i)
+    #   self.plot_grid(self.f_agent_field)
+    #   # heatmap = sns.heatmap(self.g_data, cmap='winter', cbar=False, linewidths=1, square=True)
+    #   # plt.show()
+    #   sns.heatmap(self.g_data, cmap='winter', cbar=False, linewidths=1, square=True)
+
+    #   # animation.FuncAnimation(fig, self.paint_component(), interval=100)
+    #   # plt.show()
+    #   # try:
+    #   #   time.sleep(delay)
+    #   # except:
+    #   #   print(traceback.format_exc())
+    #   #   traceback.print_exc()
+    #   i += 1
 
   def get_agent_field(self, t):
     return self.agent_field[t % 2]
-
-  def paint_component(self):
-    plt.cla()
-    sns.heatmap(self.g_data, cmap='winter', cbar=False, linewidths=1, square=True)
 
   def plot_grid(self, f_agent_field):
     row = 0
@@ -63,7 +69,7 @@ class AgentGraphics(standing_ovation_simple.StandingOvationSimple):
 
 agpanel = AgentGraphics(30, 30, 10)
 agpanel.set_new_trial()
-agpanel.run(0)
+agpanel.paint_component()
 # try:
 #   time.sleep(30)
 # except:
