@@ -69,7 +69,7 @@ class StandingOvation(object):
     self.f_final_time = -1
     self.f_final_number_of_changed_agents = -1
     self.f_final_period = -1
-    self.f_number_of_changed_agents.clear()
+    self.f_number_of_changed_agents = []
     self.f_number_of_changed_agents.append(self.n_of_column * self.n_of_row)
     return True
 
@@ -482,25 +482,25 @@ class StandingOvation(object):
       self.f_final_period = -1
     else:
       number_of_stand = self.f_number_of_standing_agents[self.f_final_time]
-    str = ""
+    result_str = ""
     if self.f_neighbor_type == self.STANDNIG_OVATION:
-      str += "STANDNIG_OVATION,"
+      result_str += "STANDNIG_OVATION,"
     elif self.f_neighbor_type == self.CONES:
-      str += "CONES,"
+      result_str += "CONES,"
     elif self.f_neighbor_type == self.MOOR:
-      str += "MOOR,"
+      result_str += "MOOR,"
     elif self.f_neighbor_type == self.NEUMANN:
-      str += "NEUMANN,"
+      result_str += "NEUMANN,"
     elif self.f_neighbor_type == self.ALL:
-      str += "ALL,"
+      result_str += "ALL,"
 
     if self.f_is_synchronize:
-      str += "S"
+      result_str += "S"
     else:
-      str += "A"
+      result_str += "A"
 
-    str += "," + self.f_width + "," + self.f_final_time + "," + self.f_final_number_of_changed_agents + "," + number_of_stand
-    return str
+    result_str += "," + str(self.f_width) + "," + str(self.f_final_time) + "," + str(self.f_final_number_of_changed_agents) + "," + str(number_of_stand)
+    return result_str
 
   # This method is unusable because period is much bigger than what I expected.
   # So please use "is_saturate" method to decide the system is in periodic phase.

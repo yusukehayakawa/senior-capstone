@@ -6,7 +6,6 @@ import math
 
 class StandingOvationSimple(object):
   def __init__(self, n_column, n_row, tmax):
-
     self.n_of_column = n_column
     self.n_of_row = n_row
     self.tmax = tmax
