@@ -5,7 +5,7 @@ import sys
 import math
 
 class StandingOvation(object):
-  def __init__(self, n_column, n_row, tmax, neibour_type, is_syncronize, width):
+  def __init__(self, n_column, n_row, tmax, neighbor_type, is_syncronize, width):
 
     # Define field (environment)
     self.n_of_column = n_column
@@ -36,7 +36,7 @@ class StandingOvation(object):
     self.MOOR = 2
     self.NEUMANN = 3
     self.CONES = 4
-    self.f_neibour_type = neibour_type
+    self.f_neighbor_type = neighbor_type
 
     behavior = 0
     count = 0
@@ -54,16 +54,16 @@ class StandingOvation(object):
         count += 1
         col += 1
       row += 1
-    self.set_new_trial(neibour_type, is_syncronize, width, 0.5)
+    self.set_new_trial(neighbor_type, is_syncronize, width, 0.5)
 
-  def initial_setting(self, neibour_type, is_syncronize, width):
+  def initial_setting(self, neighbor_type, is_syncronize, width):
     if width < 0.0 or width > 1.0:
       print("width is out of range [0,1]")
       return False
     else:
       self.f_width = width
 
-    self.f_neibour_type = neibour_type
+    self.f_neighbor_type = neighbor_type
     self.f_is_synchronize = is_syncronize
     self.f_period_counter = 0
     self.f_final_time = -1
@@ -73,8 +73,8 @@ class StandingOvation(object):
     self.f_number_of_changed_agents.append(self.n_of_column * self.n_of_row)
     return True
 
-  def set_new_trial(self, neibour_type, is_syncronize, width, rate_of_stand):
-    self.initial_setting(neibour_type, is_syncronize, width)
+  def set_new_trial(self, neighbor_type, is_syncronize, width, rate_of_stand):
+    self.initial_setting(neighbor_type, is_syncronize, width)
     size = len(self.f_random_order)
     number_of_stand = rate_of_stand * size
     counter_of_stand = number_of_stand
@@ -101,7 +101,7 @@ class StandingOvation(object):
     self.f_number_of_standing_agents.append(counter_of_stand)
     self.f_min_number_of_changed_agents = self.n_of_column * self.n_of_row
 
-  def get_neibour_set_standing_ovation(self, row, col, agent, agent_field):
+  def get_neighbor_set_standing_ovation(self, row, col, agent, agent_field):
     number_of_standing = 0
     if row != 0:
       if col == 0:
@@ -139,7 +139,7 @@ class StandingOvation(object):
         agent.make_decision(2, number_of_standing)
         return True
 
-  def get_neibour_set_cones(self, row, col, agent, agent_field):
+  def get_neighbor_set_cones(self, row, col, agent, agent_field):
     number_of_standing = 0
     counter = 0
     if col == 0:
@@ -166,7 +166,7 @@ class StandingOvation(object):
     agent.make_decision(counter, number_of_standing)
 
 
-  def get_neibour_set_moor(self, row, col, agent, agent_field):
+  def get_neighbor_set_moor(self, row, col, agent, agent_field):
     number_of_standing = 0
     number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
     number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
@@ -179,7 +179,7 @@ class StandingOvation(object):
     agent.make_decision(8, number_of_standing)
 
 
-  def get_neibour_set_neumann(self, row, col, agent, agent_field):
+  def get_neighbor_set_neumann(self, row, col, agent, agent_field):
     number_of_standing = 0
     number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
     number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
@@ -208,26 +208,26 @@ class StandingOvation(object):
   def next_step(self, t):
     is_stable = False
     if self.f_is_synchronize:
-      if self.f_neibour_type == self.STANDNIG_OVATION:
+      if self.f_neighbor_type == self.STANDNIG_OVATION:
         self.next_step_standing_ovation_sync(t)
-      elif self.f_neibour_type == self.CONES:
+      elif self.f_neighbor_type == self.CONES:
         self.next_step_sync_cone(t)
-      elif self.f_neibour_type == self.MOOR:
+      elif self.f_neighbor_type == self.MOOR:
         self.next_step_sync_moor(t)
-      elif self.f_neibour_type == self.NEUMANN:
+      elif self.f_neighbor_type == self.NEUMANN:
         self.next_step_sync_neumann(t)
-      elif self.f_neibour_type == self.ALL:
+      elif self.f_neighbor_type == self.ALL:
         self.next_step_all_sync(t)
     else:
-      if self.f_neibour_type == self.STANDNIG_OVATION:
+      if self.f_neighbor_type == self.STANDNIG_OVATION:
         self.next_step_standing_ovation_async(t)
-      elif self.f_neibour_type == self.CONES:
+      elif self.f_neighbor_type == self.CONES:
         self.next_step_async_cone(t)
-      elif self.f_neibour_type == self.MOOR:
+      elif self.f_neighbor_type == self.MOOR:
         self.next_step_async_moor(t)
-      elif self.f_neibour_type == self.NEUMANN:
+      elif self.f_neighbor_type == self.NEUMANN:
         self.next_step_async_neumann(t)
-      elif self.f_neibour_type == self.ALL:
+      elif self.f_neighbor_type == self.ALL:
         self.next_step_all_async(t)
 
     self.count_changed_and_stand_agent(t)
@@ -285,7 +285,7 @@ class StandingOvation(object):
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        self.get_neibour_set_standing_ovation(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
+        self.get_neighbor_set_standing_ovation(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
         col += 1
       row += 1
 
@@ -301,14 +301,14 @@ class StandingOvation(object):
     for i in self.f_random_order:
       row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      self.get_neibour_set_standing_ovation(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
+      self.get_neighbor_set_standing_ovation(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
 
   def next_step_sync_cone(self, t):
     row = 0
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        self.get_neibour_set_cones(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
+        self.get_neighbor_set_cones(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
         col += 1
       row += 1
 
@@ -324,14 +324,14 @@ class StandingOvation(object):
     for i in self.f_random_order:
       row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      self.get_neibour_set_cones(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
+      self.get_neighbor_set_cones(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
 
   def next_step_sync_moor(self, t):
     row = 0
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        self.get_neibour_set_moor(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
+        self.get_neighbor_set_moor(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
         col += 1
       row += 1
 
@@ -348,14 +348,14 @@ class StandingOvation(object):
     for i in self.f_random_order:
       row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      self.get_neibour_set_moor(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
+      self.get_neighbor_set_moor(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
 
   def next_step_sync_neumann(self, t):
     row = 0
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        self.get_neibour_set_neumann(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
+        self.get_neighbor_set_neumann(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
         col += 1
       row += 1
 
@@ -372,7 +372,7 @@ class StandingOvation(object):
     for i in self.f_random_order:
       row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      self.get_neibour_set_neumann(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
+      self.get_neighbor_set_neumann(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
 
   def next_step_all_sync(self, t):
     total = self.n_of_column * self.n_of_row
@@ -483,15 +483,15 @@ class StandingOvation(object):
     else:
       number_of_stand = self.f_number_of_standing_agents[self.f_final_time]
     str = ""
-    if self.f_neibour_type == self.STANDNIG_OVATION:
+    if self.f_neighbor_type == self.STANDNIG_OVATION:
       str += "STANDNIG_OVATION,"
-    elif self.f_neibour_type == self.CONES:
+    elif self.f_neighbor_type == self.CONES:
       str += "CONES,"
-    elif self.f_neibour_type == self.MOOR:
+    elif self.f_neighbor_type == self.MOOR:
       str += "MOOR,"
-    elif self.f_neibour_type == self.NEUMANN:
+    elif self.f_neighbor_type == self.NEUMANN:
       str += "NEUMANN,"
-    elif self.f_neibour_type == self.ALL:
+    elif self.f_neighbor_type == self.ALL:
       str += "ALL,"
 
     if self.f_is_synchronize:
@@ -556,7 +556,7 @@ class StandingOvation(object):
 is_syncronize = True
 str_s = ""
 str_t = ""
-so = StandingOvation(300, 300, 800, 3, is_syncronize, 0.0)
+so = StandingOvation(30, 30, 4, 3, is_syncronize, 0.0)
 # StandingOvation NEUMANN
 
 trial = 100
@@ -567,31 +567,31 @@ while trial < 102:
     is_syncronize = False
   width = 0
   while width <= 100:
-    neibour_type = 0
-    while neibour_type < 5:
+    neighbor_type = 0
+    while neighbor_type < 4:
       if is_syncronize == True:
         str_s = "S"
       else:
         str_s = "A"
-      if neibour_type == so.STANDNIG_OVATION:
+      if neighbor_type == 0:
         str_t = "STANDNIG_OVATION"
-      elif neibour_type == so.All:
+      elif neighbor_type == 1:
         str_t = "All"
-      elif neibour_type == so.NEUMANN:
+      elif neighbor_type == 2:
         str_t = "NEUMANN"
-      elif neibour_type == so.MOOR:
+      elif neighbor_type == 3:
         str_t = "MOOR"
-      elif neibour_type == so.CONES:
+      elif neighbor_type == 4:
         str_t = "CONES"
 
       d_width = width / 100.0
-      so.set_new_trial(neibour_type, is_syncronize, d_width, 0.5)
+      so.set_new_trial(neighbor_type, is_syncronize, d_width, 0.5)
       start = int(time.time() * 1000)
       so.run_non_stop()
       end = int(time.time() * 1000)
       runTime = (end - start) / 1000.0
 
-      print(str_s + "\t" + str_t + "\t" + str(width) + "\t" + runTime)
-      neibour_type += 1
+      # print(str_s + "\t" + str_t + "\t" + str(width) + "\t" + runTime)
+      neighbor_type += 1
     width += 20
   trial += 1

@@ -7,13 +7,13 @@ import numpy as np
 
 class SimpleRun:
   def __init__(self, f_standing_ovation):
-    standing_ovation.StandingOvation(300, 300, 800, 1, True, 0.0)
+    standing_ovation.StandingOvation(30, 30, 4, 1, True, 0.0)
     # StandingOvation ALL
 
     self.f_n_of_column = f_standing_ovation.n_of_column
     self.f_n_of_row = f_standing_ovation.n_of_row
     self.f_tmax = f_standing_ovation.tmax
-    self.f_neibour_type = f_standing_ovation.f_neibour_type
+    self.f_neighbor_type = f_standing_ovation.f_neighbor_type
 
   def run(self):
     t = 1
@@ -49,15 +49,15 @@ class SimpleRun:
 agpanel = SimpleRun()
 trial = 0
 while trial < 100:
-  neibour_type = 0
-  while neibour_type < 4:
+  neighbor_type = 0
+  while neighbor_type < 4:
     width = 0
     while width <= 100:
       d_width = width / 100.0
-      agpanel.f_standing_ovation.set_new_trial(neibour_type, True, d_width, 0.5)
+      agpanel.f_standing_ovation.set_new_trial(neighbor_type, True, d_width, 0.5)
       agpanel.run_non_stop(0)
       time.sleep(3000)
       width += 20
-    neibour_type += 1
+    neighbor_type += 1
   trial += 1
 sys.exit()

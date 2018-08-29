@@ -18,7 +18,7 @@ class AgentHeatmap(standing_ovation_simple.StandingOvationSimple):
       self.f_agent_field = self.get_agent_field(t)
       self.set_heatmap_data(self.f_agent_field)
       sns.heatmap(self.g_data, cmap='winter', cbar=False, linewidths=1, square=True)
-      plt.pause(.1)
+      plt.pause(.01)
       # try:
       #   time.sleep(delay)
       # except:
