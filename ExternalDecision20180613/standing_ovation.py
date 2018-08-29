@@ -11,7 +11,7 @@ class StandingOvation(object):
     self.n_of_column = n_column
     self.n_of_row = n_row
     self.tmax = tmax
-    F_FIELD_BUFFER_SIZE = 2
+    self.F_FIELD_BUFFER_SIZE = 2
 
     # Define Agent properties
     self.f_width = 0
@@ -19,7 +19,7 @@ class StandingOvation(object):
 
     # record data
     # agent_field[0~1][row][col]作成
-    self.agent_field = [[[0+row for row in range(n_row)] for col in range(n_column) ] for k in range(StandingOvation.F_FIELD_BUFFER_SIZE)]
+    self.agent_field = [[[0+row for row in range(n_row)] for col in range(n_column) ] for k in range(self.F_FIELD_BUFFER_SIZE)]
     self.f_random_order = []
     self.f_random = int(time.time() * 1000)
     self.f_number_of_changed_agents = []
@@ -31,11 +31,11 @@ class StandingOvation(object):
     self.f_final_number_of_changed_agents = 0
     self.f_final_period = 0
 
-    STANDNIG_OVATION = 0
-    ALL = 1
-    MOOR = 2
-    NEUMANN = 3
-    CONES = 4
+    self.STANDNIG_OVATION = 0
+    self.ALL = 1
+    self.MOOR = 2
+    self.NEUMANN = 3
+    self.CONES = 4
     self.f_neibour_type = neibour_type
 
     behavior = 0
@@ -46,10 +46,10 @@ class StandingOvation(object):
       col = 0
       while col < n_column:
         self.f_random_order.append(count)
-        name = row + "" + col
+        name = str(row) + "" + str(col)
         k = 0
-        while k < StandingOvation.F_FIELD_BUFFER_SIZE: #2
-          agent_field[k][row][col] = agent.Agent(behavior, name, rate)
+        while k < self.F_FIELD_BUFFER_SIZE: #2
+          self.agent_field[k][row][col] = agent.Agent(behavior, name, rate)
           k += 1
         count += 1
         col += 1
@@ -70,7 +70,7 @@ class StandingOvation(object):
     self.f_final_number_of_changed_agents = -1
     self.f_final_period = -1
     self.f_number_of_changed_agents.clear()
-    self.f_number_of_changed_agents.apend(self.n_of_column * self.n_of_row)
+    self.f_number_of_changed_agents.append(self.n_of_column * self.n_of_row)
     return True
 
   def set_new_trial(self, neibour_type, is_syncronize, width, rate_of_stand):
@@ -91,7 +91,7 @@ class StandingOvation(object):
         behavior = 0
 
       k = 0
-      while k < StandingOvation.F_FIELD_BUFFER_SIZE: #2
+      while k < self.F_FIELD_BUFFER_SIZE: #2
         self.agent_field[k][row][col].behavior = behavior
         self.agent_field[k][row][col].f_ratio = rate
         k += 1
@@ -208,32 +208,32 @@ class StandingOvation(object):
   def next_step(self, t):
     is_stable = False
     if self.f_is_synchronize:
-      if self.f_neibour_type == StandingOvation.STANDNIG_OVATION:
+      if self.f_neibour_type == self.STANDNIG_OVATION:
         self.next_step_standing_ovation_sync(t)
-      elif self.f_neibour_type == StandingOvation.CONES:
+      elif self.f_neibour_type == self.CONES:
         self.next_step_sync_cone(t)
-      elif self.f_neibour_type == StandingOvation.MOOR:
+      elif self.f_neibour_type == self.MOOR:
         self.next_step_sync_moor(t)
-      elif self.f_neibour_type == StandingOvation.NEUMANN:
+      elif self.f_neibour_type == self.NEUMANN:
         self.next_step_sync_neumann(t)
-      elif self.f_neibour_type == StandingOvation.ALL:
+      elif self.f_neibour_type == self.ALL:
         self.next_step_all_sync(t)
     else:
-      if self.f_neibour_type == StandingOvation.STANDNIG_OVATION:
+      if self.f_neibour_type == self.STANDNIG_OVATION:
         self.next_step_standing_ovation_async(t)
-      elif self.f_neibour_type == StandingOvation.CONES:
+      elif self.f_neibour_type == self.CONES:
         self.next_step_async_cone(t)
-      elif self.f_neibour_type == StandingOvation.MOOR:
+      elif self.f_neibour_type == self.MOOR:
         self.next_step_async_moor(t)
-      elif self.f_neibour_type == StandingOvation.NEUMANN:
+      elif self.f_neibour_type == self.NEUMANN:
         self.next_step_async_neumann(t)
-      elif self.f_neibour_type == StandingOvation.ALL:
+      elif self.f_neibour_type == self.ALL:
         self.next_step_all_async(t)
 
     self.count_changed_and_stand_agent(t)
     num = self.f_number_of_changed_agents[t]
     # チェック
-    if t > StandingOvation.F_FIELD_BUFFER_SIZE:
+    if t > self.F_FIELD_BUFFER_SIZE:
       if num == 0:
         is_stable = True
         if self.f_final_number_of_changed_agents != 0:
@@ -241,7 +241,7 @@ class StandingOvation(object):
           self.f_final_period = 0
           self.f_final_time = t
       elif num < self.n_of_column * self.n_of_row / 50:
-        if is_saturate(t):
+        if self.is_saturate(t):
           is_stable = True
     return is_stable
 
@@ -271,9 +271,9 @@ class StandingOvation(object):
     while i < self.n_of_row:
       j = 0
       while j < self.n_of_column:
-        if (self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior != self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior):
+        if (self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior != self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE][i][j].behavior):
           counter_of_changed_agent += 1
-        if (self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior == 1):
+        if (self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior == 1):
           counter_of_stand += 1
         j += 1
       i += 1
@@ -285,7 +285,7 @@ class StandingOvation(object):
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        self.get_neibour_set_standing_ovation(row, col, self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE])
+        self.get_neibour_set_standing_ovation(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
         col += 1
       row += 1
 
@@ -294,21 +294,21 @@ class StandingOvation(object):
     while i < self.n_of_row:
       j = 0
       while j < self.n_of_column:
-        self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior
+        self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE][i][j].behavior
         j += 1
       i += 1
     random.shuffle(self.f_random_order)
     for i in self.f_random_order:
-      row = i / self.n_of_column
+      row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      self.get_neibour_set_standing_ovation(row, col, self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE])
+      self.get_neibour_set_standing_ovation(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
 
   def next_step_sync_cone(self, t):
     row = 0
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        self.get_neibour_set_cones(row, col, self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE])
+        self.get_neibour_set_cones(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
         col += 1
       row += 1
 
@@ -317,21 +317,21 @@ class StandingOvation(object):
     while i < self.n_of_row:
       j = 0
       while j < self.n_of_column:
-        self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior
+        self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE][i][j].behavior
         j += 1
       i += 1
     random.shuffle(self.f_random_order)
     for i in self.f_random_order:
-      row = i / self.n_of_column
+      row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      self.get_neibour_set_cones(row, col, self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE])
+      self.get_neibour_set_cones(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
 
   def next_step_sync_moor(self, t):
     row = 0
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        get_neibour_set_moor(row, col, self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE])
+        self.get_neibour_set_moor(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
         col += 1
       row += 1
 
@@ -340,22 +340,22 @@ class StandingOvation(object):
     while i < self.n_of_row:
       j = 0
       while j < self.n_of_column:
-        self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior
+        self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE][i][j].behavior
         j += 1
       i += 1
 
     random.shuffle(self.f_random_order)
     for i in self.f_random_order:
-      row = i / self.n_of_column
+      row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      get_neibour_set_moor(row, col, self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE])
+      self.get_neibour_set_moor(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
 
   def next_step_sync_neumann(self, t):
     row = 0
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        get_neibour_set_neumann(row, col, self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE])
+        self.get_neibour_set_neumann(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE])
         col += 1
       row += 1
 
@@ -364,15 +364,15 @@ class StandingOvation(object):
     while i < self.n_of_row:
       j = 0
       while j < self.n_of_column:
-        self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior
+        self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE][i][j].behavior
         j += 1
       i += 1
 
     random.shuffle(self.f_random_order)
     for i in self.f_random_order:
-      row = i / self.n_of_column
+      row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      get_neibour_set_neumann(row, col, self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE])
+      self.get_neibour_set_neumann(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[t % self.F_FIELD_BUFFER_SIZE])
 
   def next_step_all_sync(self, t):
     total = self.n_of_column * self.n_of_row
@@ -381,13 +381,13 @@ class StandingOvation(object):
     while i < self.n_of_row:
       j = 0
       while j < self.n_of_column:
-        observed_num_of_stand = old_num_of_stand - self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior
+        observed_num_of_stand = old_num_of_stand - self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior
         current_ratio = observed_num_of_stand / total
         # print(current_ratio)
-        if current_ratio >= self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].f_ratio:
-          self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior = 1
+        if current_ratio >= self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].f_ratio:
+          self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior = 1
         else:
-          self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior = 0
+          self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior = 0
         j += 1
       i += 1
 
@@ -399,23 +399,23 @@ class StandingOvation(object):
     while i < self.n_of_row:
       j = 0
       while j < self.n_of_column:
-        self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior
+        self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior = self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE][i][j].behavior
         j += 1
       i += 1
 
     for i in self.f_random_order:
-      row = i / self.n_of_column
+      row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      observed_num_of_stand = old_num_of_stand - self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col].behavior
+      observed_num_of_stand = old_num_of_stand - self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col].behavior
       current_ratio = observed_num_of_stand / total
       # print(current_ratio)
       if (observed_num_of_stand / total) >= self.agent_field[0][row][col].f_ratio:
-        if self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col].behavior == 0:
-          self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col].behavior = 1
+        if self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col].behavior == 0:
+          self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col].behavior = 1
           old_num_of_stand += 1
       else:
-        if self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col].behavior == 1:
-          self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col].behavior = 0
+        if self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col].behavior == 1:
+          self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col].behavior = 0
           old_num_of_stand -= 1
 
   def to_string_befavior(self, t):
@@ -424,7 +424,7 @@ class StandingOvation(object):
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        output += self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][row][col].behavior + ","
+        output += self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col].behavior + ","
         col += 1
       output += "\n"
       row += 1
@@ -471,10 +471,10 @@ class StandingOvation(object):
   # @return
 
   def get_agent_field(self, t):
-    return self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE]
+    return self.agent_field[t % self.F_FIELD_BUFFER_SIZE]
 
   def trial_result(self, t):
-    number_of_standing = 0
+    number_of_stand = 0
     if self.f_final_time < 0:
       self.f_final_time = self.tmax - 1
       self.f_number_of_changed_agents = self.f_number_of_changed_agents[self.tmax - 1]
@@ -483,15 +483,15 @@ class StandingOvation(object):
     else:
       number_of_stand = self.f_number_of_standing_agents[self.f_final_time]
     str = ""
-    if self.f_neibour_type == StandingOvation.STANDNIG_OVATION:
+    if self.f_neibour_type == self.STANDNIG_OVATION:
       str += "STANDNIG_OVATION,"
-    elif self.f_neibour_type == StandingOvation.CONES:
+    elif self.f_neibour_type == self.CONES:
       str += "CONES,"
-    elif self.f_neibour_type == StandingOvation.MOOR:
+    elif self.f_neibour_type == self.MOOR:
       str += "MOOR,"
-    elif self.f_neibour_type == StandingOvation.NEUMANN:
+    elif self.f_neibour_type == self.NEUMANN:
       str += "NEUMANN,"
-    elif self.f_neibour_type == StandingOvation.ALL:
+    elif self.f_neibour_type == self.ALL:
       str += "ALL,"
 
     if self.f_is_synchronize:
@@ -511,7 +511,7 @@ class StandingOvation(object):
     c_num_of_c_agent = self.f_number_of_changed_agents[t]
     period = 0
     time = t - 1
-    while time > t - StandingOvation.F_FIELD_BUFFER_SIZE:
+    while time > t - self.F_FIELD_BUFFER_SIZE:
       if c_num_of_c_agent == self.f_number_of_changed_agents[time]:
         is_same_number = True
         break
@@ -519,14 +519,14 @@ class StandingOvation(object):
 
     if is_same_number:
       past = 1
-      while past < StandingOvation.F_FIELD_BUFFER_SIZE:
+      while past < self.F_FIELD_BUFFER_SIZE:
         is_all_same = True
         try:
           i = 0
           while i < self.n_of_row:
             j = 0
             while j < self.n_of_column:
-              if self.agent_field[t % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior != self.agent_field[(t - past) % StandingOvation.F_FIELD_BUFFER_SIZE][i][j].behavior:
+              if self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior != self.agent_field[(t - past) % self.F_FIELD_BUFFER_SIZE][i][j].behavior:
                 is_all_same = False
                 break
               j += 1
@@ -556,7 +556,8 @@ class StandingOvation(object):
 is_syncronize = True
 str_s = ""
 str_t = ""
-so = StandingOvation(300, 300, 800, StandingOvation.NEUMANN, is_syncronize, 0.0)
+so = StandingOvation(300, 300, 800, 3, is_syncronize, 0.0)
+# StandingOvation NEUMANN
 
 trial = 100
 while trial < 102:
@@ -584,7 +585,7 @@ while trial < 102:
         str_t = "CONES"
 
       d_width = width / 100.0
-      so.set_new_trial(neibour_type, is_syncronize, d_width)
+      so.set_new_trial(neibour_type, is_syncronize, d_width, 0.5)
       start = int(time.time() * 1000)
       so.run_non_stop()
       end = int(time.time() * 1000)
