@@ -6,16 +6,6 @@ import sys
 import numpy as np
 
 class SimpleRun:
-
-  # f_standing_ovation = StandingOvation()
-  # f_agent_field = Agent()
-  # f_n_of_column = 0
-  # f_n_of_row = 0
-  # f_tmax = 0
-  # f_neibour_type = 0
-  # fSizeX = 0
-  # fSizeY = 0
-
   def __init__(self, f_standing_ovation):
     super().__init__(300, 300, 800, standing_ovation.all, True, 0.0)
 
