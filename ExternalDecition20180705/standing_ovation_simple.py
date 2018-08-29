@@ -72,7 +72,7 @@ class StandingOvationSimple(object):
   def next_step(self, t):
     self.next_step_standing_ovation_sync(t)
 
-  def get_neibor_set_standing_ovation(self, row, col, agent, agent_field):
+  def get_neighbor_set_standing_ovation(self, row, col, agent, agent_field):
     number_of_standing = 0
     if row != 0:
       if col == 0:
@@ -115,7 +115,7 @@ class StandingOvationSimple(object):
     while row < self.n_of_row:
       col = 0
       while col < self.n_of_column:
-        self.get_neibor_set_standing_ovation(row, col, self.agent_field[t % 2][row][col], self.agent_field[(t - 1) % 2])
+        self.get_neighbor_set_standing_ovation(row, col, self.agent_field[t % 2][row][col], self.agent_field[(t - 1) % 2])
         col += 1
       row += 1
 
