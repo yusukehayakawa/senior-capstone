@@ -97,7 +97,7 @@ class StandingOvation(object):
         k += 1
 
       counter += 1
-    self.f_number_of_standing_agents.clear()
+    self.f_number_of_standing_agents = []
     self.f_number_of_standing_agents.append(counter_of_stand)
     self.f_min_number_of_changed_agents = self.n_of_column * self.n_of_row
 
