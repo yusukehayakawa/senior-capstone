@@ -556,7 +556,13 @@ class StandingOvation(object):
 is_syncronize = True
 str_s = ""
 str_t = ""
-so = StandingOvation(30, 30, 4, 3, is_syncronize, 0.0)
+so = StandingOvation(30, 30, 4, 1, is_syncronize, 0.0)
+# (n_column, n_row, tmax, neighbor_type, is_syncronize, width)
+# STANDNIG_OVATION = 0
+# ALL = 1
+# MOOR = 2
+# NEUMANN = 3
+# CONES = 4
 # StandingOvation NEUMANN
 
 trial = 100
@@ -589,9 +595,9 @@ while trial < 102:
       start = int(time.time() * 1000)
       so.run_non_stop()
       end = int(time.time() * 1000)
-      runTime = (end - start) / 1000.0
+      run_time = (end - start) / 1000.0
 
-      # print(str_s + "\t" + str_t + "\t" + str(width) + "\t" + runTime)
+      print(str_s + "\t" + str_t + "\t" + str(width) + "\t" + str(run_time))
       neighbor_type += 1
     width += 20
   trial += 1

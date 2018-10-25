@@ -5,6 +5,13 @@ import time
 import sys
 import numpy as np
 
+# (n_column, n_row, tmax, neighbor_type, is_syncronize, width)
+# STANDNIG_OVATION = 0
+# ALL = 1
+# MOOR = 2
+# NEUMANN = 3
+# CONES = 4
+
 class SimpleRun(object):
   def __init__(self):
     self.f_standing_ovation = standing_ovation.StandingOvation(30, 30, 4, 1, True, 0.0)
