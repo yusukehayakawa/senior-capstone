@@ -4,7 +4,7 @@ import random
 import sys
 import math
 
-class StandingOvation(object):
+class NeighborSet(object):
   def __init__(self, n_column, n_row, tmax, neighbor_type, is_syncronize, width):
 
     # Define field (environment)
@@ -553,50 +553,51 @@ class StandingOvation(object):
       return False
 
 # 実行
-# # (n_column, n_row, tmax, neighbor_type, is_syncronize, width)
-# # STANDNIG_OVATION = 0
-# # ALL = 1
-# # MOOR = 2
-# # NEUMANN = 3
-# # CONES = 4
-# # StandingOvation NEUMANN
+is_syncronize = True
+str_s = ""
+str_t = ""
+so = NeighborSet(30, 30, 4, 1, is_syncronize, 0.0)
+# (n_column, n_row, tmax, neighbor_type, is_syncronize, width)
+# STANDNIG_OVATION = 0
+# ALL = 1
+# MOOR = 2
+# NEUMANN = 3
+# CONES = 4
+# NeighborSet NEUMANN
 
-# is_syncronize = True
-# str_s = ""
-# str_t = ""
-# so = StandingOvation(100, 100, 5, 2, is_syncronize, 0.0)
-# trial = 100
-# while trial < 102:
-#   if trial % 2 == 1:
-#     is_syncronize = True
-#   else:
-#     is_syncronize = False
-#   width = 0
-#   while width <= 100:
-#     neighbor_type = 0
-#     while neighbor_type < 4:
-#       if is_syncronize == True:
-#         str_s = "S"
-#       else:
-#         str_s = "A"
-#       if neighbor_type == 0:
-#         str_t = "STANDNIG_OVATION"
-#       elif neighbor_type == 1:
-#         str_t = "All"
-#       elif neighbor_type == 2:
-#         str_t = "NEUMANN"
-#       elif neighbor_type == 3:
-#         str_t = "MOOR"
-#       elif neighbor_type == 4:
-#         str_t = "CONES"
+trial = 100
+while trial < 102:
+  if trial % 2 == 1:
+    is_syncronize = True
+  else:
+    is_syncronize = False
+  width = 0
+  while width <= 100:
+    neighbor_type = 0
+    while neighbor_type < 4:
+      if is_syncronize == True:
+        str_s = "S"
+      else:
+        str_s = "A"
+      if neighbor_type == 0:
+        str_t = "STANDNIG_OVATION"
+      elif neighbor_type == 1:
+        str_t = "All"
+      elif neighbor_type == 2:
+        str_t = "NEUMANN"
+      elif neighbor_type == 3:
+        str_t = "MOOR"
+      elif neighbor_type == 4:
+        str_t = "CONES"
 
-#       d_width = width / 100.0
-#       so.set_new_trial(neighbor_type, is_syncronize, d_width, 0.5)
-#       start = int(time.time() * 1000)
-#       so.run_non_stop()
-#       end = int(time.time() * 1000)
-#       run_time = (end - start) / 1000.0
-#       print(str_s + "\t" + str_t + "\t" + str(width) + "\t" + str(run_time))
-#       neighbor_type += 1
-#     width += 20
-#   trial += 1
+      d_width = width / 100.0
+      so.set_new_trial(neighbor_type, is_syncronize, d_width, 0.5)
+      start = int(time.time() * 1000)
+      so.run_non_stop()
+      end = int(time.time() * 1000)
+      run_time = (end - start) / 1000.0
+
+      print(str_s + "\t" + str_t + "\t" + str(width) + "\t" + str(run_time))
+      neighbor_type += 1
+    width += 20
+  trial += 1

@@ -53,18 +53,18 @@ class SimpleRun(object):
     return is_stable
 
 # 実行
-agpanel = SimpleRun()
-trial = 0
-while trial < 100:
-  neighbor_type = 0
-  while neighbor_type < 4:
-    width = 0
-    while width <= 100:
-      d_width = width / 100.0
-      agpanel.f_standing_ovation.set_new_trial(neighbor_type, True, d_width, 0.5)
-      agpanel.run_non_stop(0)
-      # time.sleep(3000)
-      width += 20
-    neighbor_type += 1
-  trial += 1
-sys.exit()
+# agpanel = SimpleRun()
+# trial = 0
+# while trial < 100:
+#   neighbor_type = 0
+#   while neighbor_type < 4:
+#     width = 0
+#     while width <= 100:
+#       d_width = width / 100.0
+#       agpanel.f_standing_ovation.set_new_trial(neighbor_type, True, d_width, 0.5)
+#       agpanel.run_non_stop(0)
+#       # time.sleep(3000)
+#       width += 20
+#     neighbor_type += 1
+#   trial += 1
+# sys.exit()

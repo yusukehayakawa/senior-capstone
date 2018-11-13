@@ -121,10 +121,10 @@ class StandingOvationSimple(object):
   def get_agent_field(self, t):
     return self.agent_field[t % 2]
 
-is_syncronize = True
-so = StandingOvationSimple(30, 30, 3)
-start = time.time() * 1000
-so.run()
-end = time.time() * 1000
-run_time = (end - start) / 1000.0
-print(run_time)
+# is_syncronize = True
+# so = StandingOvationSimple(30, 30, 3)
+# start = time.time() * 1000
+# so.run()
+# end = time.time() * 1000
+# run_time = (end - start) / 1000.0
+# print(run_time)
