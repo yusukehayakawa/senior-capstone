@@ -4,7 +4,7 @@ import random
 import sys
 import math
 
-class NeighborSet(object):
+class VariableMoor(object):
   def __init__(self, n_column, n_row, tmax, neighbor_type, width):
 
     # Define field (environment)
@@ -13,8 +13,6 @@ class NeighborSet(object):
     self.tmax = tmax
     self.F_FIELD_BUFFER_SIZE = 2
 
-    self.f_sort_of_neighbor = { 1, 2, 6, 10, 12, 10, 6, 2, 1 }
-
     # Define Agent properties
     self.f_width = 0
 
@@ -22,7 +20,7 @@ class NeighborSet(object):
     # agent_field[0~1][row][col]作成
     self.agent_field = [[[0+row for row in range(n_row)] for col in range(n_column) ] for k in range(self.F_FIELD_BUFFER_SIZE)]
     self.f_random_order = []
-    self.f_random = int(time.time() * 1000)
+    # self.f_random = int(time.time() * 1000)
     self.f_number_of_changed_agents = []
     self.f_number_of_standing_agents = []
     self.f_number_of_changed_agents.append(self.n_of_column * self.n_of_row)
@@ -76,7 +74,7 @@ class NeighborSet(object):
     for i in self.f_random_order:
       row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      rate = self.f_width * (self.f_random - 0.5) + 0.5
+      rate = self.f_width * (random.random() - 0.5) + 0.5
       if counter < counter_of_stand:
         behavior = 1
       else:
@@ -143,188 +141,511 @@ class NeighborSet(object):
 
   def get_neighbor_set_variable_moor(self, row, col, agent, agent_field, number_of_observed_agent, number_of_case):
     number_of_standing = 0
+    # MOORの時
     if number_of_observed_agent == 8:
-      if number_of_case == 0:
-        observed_agent = [True, True, True, True, True, True, True, True]
-        return observed_agent
-
-        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
-        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
-        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
-        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
-        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+      if number_of_case == 0: 
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
         number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
         number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
-        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
         agent.make_decision(number_of_observed_agent, number_of_standing)
-
-      else:
-        return error_messeage_of_moor(number_of_observed_agent, number_of_case)
+    # 近隣の数が7の時
     elif number_of_observed_agent == 7:
       if number_of_case == 0:
-        observed_agent = [True, True, True, True, True, False, True, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 1:
-        observed_agent = [True, True, True, True, True, True, False, True]
-        return observed_agent
-      else:
-        return error_messeage_of_moor(number_of_observed_agent, number_of_case)
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
+    # 近隣の数が6の時
     elif number_of_observed_agent == 6:
       if number_of_case == 0:
-        observed_agent = [True, False, True, True, True, False, True, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 1:
-        observed_agent = [True, True, True, True, True, False, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 2:
-        observed_agent = [True, False, True, True, True, True, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 3:
-        observed_agent = [True, True, True, True, False, True, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 4:
-        observed_agent = [True, True, False, True, True, False, True, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 5:
-        observed_agent = [True, True, True, True, True, False, True, False]
-        return observed_agent
-      else:
-        return error_messeage_of_moor(number_of_observed_agent, number_of_case)
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
+    # 近隣の数が5の時
     elif number_of_observed_agent == 5:
       if number_of_case == 0:
-        observed_agent = [True, True, True, False, True, False, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 1:
-        observed_agent = [True, False, True, True, True, False, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 2:
-        observed_agent = [True, True, True, True, False, False, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 3:
-        observed_agent = [True, False, True, True, False, False, True, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 4:
-        observed_agent = [True, True, True, True, True, False, False, False]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 5:
-        observed_agent = [True, True, False, True, True, False, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 6:
-        observed_agent = [False, True, False, True, True, True, False, True]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 7:
-        observed_agent = [True, True, False, True, True, True, False, False]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 8:
-        observed_agent = [False, True, False, True, True, True, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 9:
-        observed_agent = [True, False, True, False, False, True, True, True]
-        return observed_agent
-      else:
-        return error_messeage_of_moor(number_of_observed_agent, number_of_case)
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
+    # 近隣の数が4の時
     elif number_of_observed_agent == 4:
       if number_of_case == 0:
-        observed_agent = [True, False, True, False, False, True, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 1:
-        observed_agent = [False, True, False, True, True, False, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 2:
-        observed_agent = [True, True, True, False, False, True, False, False]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 3:
-        observed_agent = [False, True, True, False, False, True, False, True]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 4:
-        observed_agent = [False, True, True, False, True, False, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 5:
-        observed_agent = [False, False, True, True, True, False, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 6:
-        observed_agent = [True, True, True, True, False, False, False, False]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 7:
-        observed_agent = [True, False, True, True, True, False, False, False]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 8:
-        observed_agent = [True, True, True, False, False, False, True, False]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 9:
-        observed_agent = [False, False, True, False, True, True, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 10:
-        observed_agent = [True, False, False, True, True, False, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 11:
-        observed_agent = [True, True, False, False, False, False, True, True]
-        return observed_agent
-      else:
-        return error_messeage_of_moor(number_of_observed_agent, number_of_case)
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
+    # 近隣の数が3の時
     elif number_of_observed_agent == 3:
       if number_of_case == 0:
-        observed_agent = [False, False, False, True, False, True, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 1:
-        observed_agent = [False, True, False, False, False, True, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 2:
-        observed_agent = [False, False, False, False, True, True, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 3:
-        observed_agent = [False, True, False, False, True, True, False, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 4:
-        observed_agent = [False, False, False, False, False, True, True, True]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 5:
-        observed_agent = [False, False, True, False, False, True, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 6:
-        observed_agent = [True, False, True, False, False, False, True, False]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 7:
-        observed_agent = [False, False, True, False, False, False, True, True]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 8:
-        observed_agent = [True, False, True, False, False, False, False, True]
-        return observed_agent
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 9:
-        observed_agent = [False, True, False, True, True, False, False, False]
-        return observed_agent
-      else:
-        return error_messeage_of_moor(number_of_observed_agent, number_of_case)
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
+    # 近隣の数が2の時
     elif number_of_observed_agent == 2:
       if number_of_case == 0:
-        observed_agent = [False, True, False, False, False, True, False, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 1:
-        observed_agent = [False, False, False, False, False, True, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 2:
-        observed_agent = [False, True, False, False, False, False, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 3:
-        observed_agent = [False, False, False, False, True, False, True, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 4:
-        observed_agent = [False, False, True, False, False, True, False, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 5:
-        observed_agent = [False, False, False, False, False, True, False, True]
-        return observed_agent
-      else:
-        return error_messeage_of_moor(number_of_observed_agent, number_of_case)
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
     elif number_of_observed_agent == 1:
       if number_of_case == 0:
-        observed_agent = [False, False, False, False, False, True, False, False]
-        return observed_agent
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
       elif number_of_case == 1:
-        observed_agent = [False, False, False, False, False, False, True, False]
-        return observed_agent
-      else:
-        return error_messeage_of_moor(number_of_observed_agent, number_of_case)
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row - 1 + self.n_of_row) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        # number_of_standing += agent_field[row][(col + 1) % self.n_of_column].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col - 1 + self.n_of_column) % self.n_of_column].behavior
+        number_of_standing += agent_field[(row + 1) % self.n_of_row][col].behavior
+        # number_of_standing += agent_field[(row + 1) % self.n_of_row][(col + 1) % self.n_of_column].behavior
+        agent.make_decision(number_of_observed_agent, number_of_standing)
     else:
       return error_messeage_of_moor(number_of_observed_agent, number_of_case)
 
@@ -424,12 +745,12 @@ class NeighborSet(object):
         else:
           self.agent_field[t % self.F_FIELD_BUFFER_SIZE][i][j].behavior = 0
 
-  def next_step_variable_moor(self, t, number_of_observed_agent, number_of_case):
+  def next_step_variable_moor(self, t):
     total_row = self.n_of_row
     total_col = self.n_of_column
     for row in range(0, total_row):
       for col in range(0, total_col):
-        self.get_neighbor_set_variable_moor(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE], number_of_observed_agent, number_of_case)
+        self.get_neighbor_set_variable_moor(row, col, self.agent_field[t % self.F_FIELD_BUFFER_SIZE][row][col], self.agent_field[(t - 1) % self.F_FIELD_BUFFER_SIZE], self.number_of_observed_agent, self.number_of_case)
 
   def to_string_befavior(self, t):
     output = ""
@@ -522,14 +843,14 @@ class NeighborSet(object):
 
 # 実行
 # 引数
-# NeighborSet(n_column, n_row, tmax, neighbor_type, width)
+# VariableMoor(n_column, n_row, tmax, neighbor_type, width)
 # STANDNIG_OVATION = 0
 # ALL = 1
 # MOOR = 2
 
 # str_s = ""
 # str_t = ""
-# so = NeighborSet(100, 100, 5, 2, 0.0)
+# so = VariableMoor(100, 100, 5, 2, 0.0)
 # for width in range(0, 101, 20):
 #   for neighbor_type in range(0, 3, 1):
 #     if neighbor_type == 0:

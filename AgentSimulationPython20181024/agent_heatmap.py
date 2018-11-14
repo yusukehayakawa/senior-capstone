@@ -42,8 +42,8 @@ class AgentHeatmap(neighbor_set.NeighborSet):
         self.heatmap_data[row][col] = f_agent_field[row][col].behavior
 
 start = int(time.time() * 1000)
-agpanel = AgentHeatmap(50, 50, 10, 0, 0.0)
-agpanel.set_new_trial(0, 0.0, 0.5)
+agpanel = AgentHeatmap(100, 100, 10, 1, 1.0)
+agpanel.set_new_trial(1, 1.0, 0.5)
 agpanel.run()
 end = int(time.time() * 1000)
 run_time = (end - start) / 1000.0

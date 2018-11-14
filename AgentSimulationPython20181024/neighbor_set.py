@@ -20,7 +20,7 @@ class NeighborSet(object):
     # agent_field[0~1][row][col]作成
     self.agent_field = [[[0+row for row in range(n_row)] for col in range(n_column) ] for k in range(self.F_FIELD_BUFFER_SIZE)]
     self.f_random_order = []
-    self.f_random = int(time.time() * 1000)
+    # self.f_random = int(time.time() * 1000)
     self.f_number_of_changed_agents = []
     self.f_number_of_standing_agents = []
     self.f_number_of_changed_agents.append(self.n_of_column * self.n_of_row)
@@ -73,7 +73,7 @@ class NeighborSet(object):
     for i in self.f_random_order:
       row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      rate = self.f_width * (self.f_random - 0.5) + 0.5
+      rate = self.f_width * (random.random() - 0.5) + 0.5
       if counter < counter_of_stand:
         behavior = 1
       else:
