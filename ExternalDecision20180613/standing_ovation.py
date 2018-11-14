@@ -84,7 +84,7 @@ class StandingOvation(object):
     for i in self.f_random_order:
       row = int(i / self.n_of_column) #整数に変換 切り捨て
       col = i % self.n_of_column
-      rate = self.f_width * (self.f_random - 0.5) + 0.5
+      rate = self.f_width * (random.random() - 0.5) + 0.5
       if counter < counter_of_stand:
         behavior = 1
       else:
