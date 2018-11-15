@@ -847,22 +847,22 @@ class VariableMoor(object):
 # STANDNIG_OVATION = 0
 # ALL = 1
 # MOOR = 2
-
-# str_s = ""
-# str_t = ""
-# so = VariableMoor(100, 100, 5, 2, 0.0)
-# for width in range(0, 101, 20):
-#   for neighbor_type in range(0, 3, 1):
-#     if neighbor_type == 0:
-#       str_t = "STANDNIG_OVATION"
-#     elif neighbor_type == 1:
-#       str_t = "All"
-#     elif neighbor_type == 2:
-#       str_t = "MOOR"
-#     d_width = width / 100.0
-#     so.set_new_trial(neighbor_type, d_width, 0.5)
-#     start = int(time.time() * 1000)
-#     so.run_non_stop()
-#     end = int(time.time() * 1000)
-#     run_time = (end - start) / 1000.0
-#     print(str_t + "\t" + str(width) + "\t" + str(run_time))
+  if __name__ == '__main__':
+    str_s = ""
+    str_t = ""
+    so = VariableMoor(100, 100, 5, 2, 0.0)
+    for width in range(0, 101, 20):
+      for neighbor_type in range(0, 3, 1):
+        if neighbor_type == 0:
+          str_t = "STANDNIG_OVATION"
+        elif neighbor_type == 1:
+          str_t = "All"
+        elif neighbor_type == 2:
+          str_t = "MOOR"
+        d_width = width / 100.0
+        so.set_new_trial(neighbor_type, d_width, 0.5)
+        start = int(time.time() * 1000)
+        so.run_non_stop()
+        end = int(time.time() * 1000)
+        run_time = (end - start) / 1000.0
+        print(str_t + "\t" + str(width) + "\t" + str(run_time))

@@ -57,14 +57,14 @@ class VariableMoorHeatmap(variable_moor.VariableMoor):
 # ALL = 1
 # MOOR = 2
 # VARIABLE_MOOR = 3
-
-f_sort_of_neighbor = [ 1, 2, 6, 10, 12, 10, 6, 2, 1 ]
-for a in range(8, 0, -1):
-  for b in range(0, f_sort_of_neighbor[a], 1):
-    agpanel = VariableMoorHeatmap(50, 50, 5, 3, 0.0, a, b)
-    agpanel.set_new_trial(3, 0.0, 0.5)
-    agpanel.run()
-    print('近隣数' + str(a) + ':ケース' +str(b) + ' done!')
+  if __name__ == '__main__':
+    f_sort_of_neighbor = [ 1, 2, 6, 10, 12, 10, 6, 2, 1 ]
+    for a in range(8, 0, -1):
+      for b in range(0, f_sort_of_neighbor[a], 1):
+        agpanel = VariableMoorHeatmap(100, 100, 20, 3, 0.0, a, b)
+        agpanel.set_new_trial(3, 0.0, 0.5)
+        agpanel.run()
+        print('近隣数' + str(a) + ':ケース' +str(b) + ' done!')
 
 
 
