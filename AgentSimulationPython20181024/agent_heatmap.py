@@ -22,9 +22,9 @@ class AgentHeatmap(neighbor_set.NeighborSet):
       self.f_agent_field = self.get_agent_field(t)
       self.set_heatmap_data(self.f_agent_field)
       sns.heatmap(self.heatmap_data, cmap='winter', cbar=False, linewidths=.001, square=True)
-    plt.show()
-      #plt.pause(.0001)
-      #print(t)
+    # plt.show()
+      plt.pause(.0001)
+      print(t)
       # スクリーンショット
       # sc = pyautogui.screenshot()
       # sc.save('screenshot' + str(t) + '.png')
@@ -42,18 +42,15 @@ class AgentHeatmap(neighbor_set.NeighborSet):
       for col in range(0, total_col):
         self.heatmap_data[row][col] = f_agent_field[row][col].behavior
 
-  if __name__ == '__main__':
-    start = int(time.time() * 1000)
-    agpanel = AgentHeatmap(300, 300, 5, 2, 0.3)
-    agpanel.set_new_trial(2, 0.3, 0.5)
-    agpanel.run()
-    end = int(time.time() * 1000)
-    run_time = (end - start) / 1000.0
-    print(str(run_time))
-
 # 引数
 # set_new_trial(self, neighbor_type, width, rate_of_stand)
 # STANDNIG_OVATION = 0
 # ALL = 1
 # MOOR = 2
-
+start = int(time.time() * 1000)
+agpanel = AgentHeatmap(100, 100, 50, 0, 0.9)
+agpanel.set_new_trial(0, 0.9, 0.5)
+agpanel.run()
+end = int(time.time() * 1000)
+run_time = (end - start) / 1000.0
+print(str(run_time))

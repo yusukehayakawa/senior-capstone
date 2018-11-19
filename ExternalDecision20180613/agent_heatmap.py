@@ -39,8 +39,8 @@ class AgentHeatmap(standing_ovation.StandingOvation):
       row += 1
 
 start = int(time.time() * 1000)
-agpanel = AgentHeatmap(300, 300, 10, 0, True, 0.0)
-agpanel.set_new_trial(0, True, 0.0, 0.5)
+agpanel = AgentHeatmap(30, 30, 10, 1, True, 0)
+agpanel.set_new_trial(1, True, 0, 0.5)
 agpanel.run()
 end = int(time.time() * 1000)
 run_time = (end - start) / 1000.0
